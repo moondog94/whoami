@@ -1,22 +1,13 @@
 const express = require('express')
 const app = express()
-var timestamp = {}
+var userInfo = {}
 
-app.get('/:time', function (req, res) {
-  var time = req.params.time
-  var isnum = /^\d+$/.test(time);
-  if(isnum) var date = new Date(+time * 1000)
-  else var date = new Date(time)
-  if(isNaN( date ))
-  {
-    timestamp.unix = null
-    timestamp.natural = null
-  }
-  else{
-    timestamp.unix = date.getTime() / 1000
-    timestamp.natural = date.toString()
-  }
-  res.json(timestamp)
+app.get('/', function (req, res) {
+  userInfo.ipaddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  userInfo.language = req.headers["accept-language"]
+  userInfo.software = req.headers['user-agent']
+  
+  res.json(userInfo)
 })
 
 app.listen(8080, function () {
